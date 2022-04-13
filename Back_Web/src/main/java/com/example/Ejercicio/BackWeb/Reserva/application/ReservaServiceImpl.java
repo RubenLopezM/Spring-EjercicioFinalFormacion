@@ -3,17 +3,21 @@ package com.example.Ejercicio.BackWeb.Reserva.application;
 import com.example.Ejercicio.BackWeb.Reserva.domain.Reserva;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaInputDTO;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaOutputDTO;
-import com.example.Ejercicio.BackWeb.Reserva.infrastructure.repository.ReservaRepo;
+import com.example.Ejercicio.BackWeb.Reserva.infrastructure.repository.ReservaRepository;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.application.ReservaDisponibleService;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ReservaServiceImpl implements ReservaService {
 
     @Autowired
-    ReservaRepo reservaRepo;
+    ReservaRepository reservaRepo;
 
     @Autowired
     ReservaDisponibleService reservaDisponibleService;
@@ -28,6 +32,15 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setAutobus(rd.getAutobus());
         reservaRepo.save(reserva);
         return convertToDTO(reserva);
+    }
+
+    @Override
+    public List<ReservaOutputDTO> searchReservas(HashMap<String, Object> conditions) {
+        List<Reserva> reservas=reservaRepo.getReservas(conditions);
+        List<ReservaOutputDTO> reservaOutputDTOS= reservas.stream()
+                .map((reserva)-> convertToDTO(reserva))
+                .collect(Collectors.toList());
+        return  reservaOutputDTOS;
     }
 
     private Reserva convertToEntity(ReservaInputDTO reservaInputDTO){
