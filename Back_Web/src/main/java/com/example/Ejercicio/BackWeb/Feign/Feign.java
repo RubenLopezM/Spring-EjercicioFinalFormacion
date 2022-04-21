@@ -10,5 +10,5 @@ public interface Feign  {
     String login(@RequestHeader("username") String username,@RequestHeader("password") String password);
 
     @GetMapping("/token/{token}")
-    String checkToken(@RequestHeader String token);
+    String checkToken(@PathVariable("token") String token);
 }

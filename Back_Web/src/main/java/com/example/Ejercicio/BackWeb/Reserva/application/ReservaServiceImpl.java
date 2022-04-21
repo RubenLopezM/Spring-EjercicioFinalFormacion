@@ -1,5 +1,6 @@
 package com.example.Ejercicio.BackWeb.Reserva.application;
 
+import com.example.Ejercicio.BackWeb.Exceptions.UnprocesableException;
 import com.example.Ejercicio.BackWeb.Reserva.domain.Reserva;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaInputDTO;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaOutputDTO;
@@ -9,6 +10,8 @@ import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,11 +25,13 @@ public class ReservaServiceImpl implements ReservaService {
     @Autowired
     ReservaDisponibleService reservaDisponibleService;
 
+    private static String[] destinosDisponibles= {"Valencia","Madrid","Barcelona","Bilbao"};
 
 
 
     @Override
     public ReservaOutputDTO addReserva(ReservaInputDTO reservaInputDTO) {
+        this.checkDestinos(reservaInputDTO.getCiudadDestino());
         Reserva reserva= convertToEntity(reservaInputDTO);
         ReservaDisponible rd= reservaDisponibleService.createReservaDisp(reservaInputDTO);
         reserva.setAutobus(rd.getAutobus());
@@ -65,5 +70,11 @@ public class ReservaServiceImpl implements ReservaService {
         reservaOutputDTO.setFechaReserva(reserva.getFechaReserva());
         reservaOutputDTO.setHoraReserva(reserva.getHoraReserva());
         return reservaOutputDTO;
+    }
+
+    private void checkDestinos(String destino){
+        if (!Arrays.asList(destinosDisponibles).contains(destino)){
+            throw new UnprocesableException("Los destinos disponibles son Valencia, Madrid,Bilbao o Barcelona");
+        }
     }
 }
