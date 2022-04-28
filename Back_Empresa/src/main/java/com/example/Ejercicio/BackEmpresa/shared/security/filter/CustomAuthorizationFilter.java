@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-    private final String HEADER = "Authorization";
+    private final String HEADER = "token";
     private final String PREFIX = "Bearer ";
     private final String SECRET = "mySecretKey";
 
@@ -65,6 +65,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private boolean existeJWTToken(HttpServletRequest request, HttpServletResponse res) {
         String authenticationHeader = request.getHeader(HEADER);
+
         if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
             return false;
         return true;

@@ -10,4 +10,5 @@ import java.util.List;
 public interface ReservaService {
     public ReservaOutputDTO addReserva(ReservaInputDTO reservaInputDTO);
     public List<ReservaOutputDTO> searchReservas(HashMap<String, Object> conditions);
+    public void listenReserva (ReservaInputDTO reservaInputDTO);
 }

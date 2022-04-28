@@ -1,22 +1,22 @@
-package com.example.Ejercicio.BackWeb.Reserva.domain;
+package com.example.Ejercicio.BackEmpresa.Reserva.domain;
 
-import com.example.Ejercicio.BackWeb.Autobus.domain.Autobus;
+import com.example.Ejercicio.BackEmpresa.Autobus.domain.Autobus;
+import com.example.Ejercicio.BackEmpresa.Correo.domain.Correo;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
-
-@Entity
-@Table(name = "reservas")
 @Data
+@Entity
 public class Reserva {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    private String id_reserva;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(updatable = false, nullable = false)
+    private UUID identificador;
     @Column(nullable = false)
     private String ciudad;
     @Column(nullable = false)

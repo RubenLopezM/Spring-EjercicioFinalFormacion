@@ -1,7 +1,6 @@
-package com.example.Ejercicio.BackWeb.Reserva.infrastructure.repository;
+package com.example.Ejercicio.BackEmpresa.Correo.infrastructure.repository;
 
-import com.example.Ejercicio.BackWeb.Reserva.domain.Reserva;
-import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
+import com.example.Ejercicio.BackEmpresa.Correo.domain.Correo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,14 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class ReservaRepositoryImpl {
+public class CorreoRepositoryImpl {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Reserva> getReservas(HashMap<String, Object> conditions){
+    public List<Correo> getData(HashMap<String, Object> conditions){
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Reserva> query= cb.createQuery(Reserva.class);
-        Root<Reserva> root = query.from(Reserva.class);
+        CriteriaQuery<Correo> query= cb.createQuery(Correo.class);
+        Root<Correo> root = query.from(Correo.class);
 
         List<Predicate> predicates = new ArrayList<>();
         conditions.forEach((field,value) ->
@@ -29,19 +28,19 @@ public class ReservaRepositoryImpl {
             switch (field)
             {
                 case "fechainferior":
-                    predicates.add(cb.greaterThanOrEqualTo(root.get("fecha"),(Date)value));
+                    predicates.add(cb.greaterThanOrEqualTo(root.get("fechaReserva"),(Date)value));
                     break;
                 case "fechasuperior":
-                    predicates.add(cb.lessThanOrEqualTo(root.get("fecha"),(Date)value));
+                    predicates.add(cb.lessThanOrEqualTo(root.get("fechaReserva"),(Date)value));
                     break;
                 case "ciudad":
-                    predicates.add(cb.equal(root.get("ciudad"),(String)value));
+                    predicates.add(cb.equal(root.get("ciudad_destino"),(String)value));
                     break;
                 case "horainferior":
-                    predicates.add(cb.greaterThanOrEqualTo(root.get("hora"),(Float)value));
+                    predicates.add(cb.greaterThanOrEqualTo(root.get("horaReserva"),(Float)value));
                     break;
                 case "horasuperior":
-                    predicates.add(cb.lessThanOrEqualTo(root.get("hora"),(Float)value));
+                    predicates.add(cb.lessThanOrEqualTo(root.get("horaReserva"),(Float)value));
                     break;
             }
         });

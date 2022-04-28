@@ -22,4 +22,10 @@ public class CustomExceptions extends ResponseEntityExceptionHandler {
         CustomError customError=new CustomError(HttpStatus.NOT_FOUND.value(), notFoundException.getMessage(),HttpStatus.NOT_FOUND.toString(), new Date() );
         return new ResponseEntity<CustomError>(customError,HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+    @ExceptionHandler(NoPlazasException.class)
+    public final ResponseEntity<CustomError> handleNoPlazasException(NoPlazasException noPlazasException){
+        CustomError customError= new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), noPlazasException.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.toString(), new Date());
+        return new ResponseEntity<CustomError>(customError,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

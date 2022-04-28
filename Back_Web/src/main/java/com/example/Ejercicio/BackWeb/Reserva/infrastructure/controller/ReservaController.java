@@ -25,17 +25,14 @@ public class ReservaController {
     @Autowired
     ReservaService reservaService;
 
-    @Autowired
-    private KafkaTemplate<String, ReservaInputDTO> reservaKafkaTemplate;
 
-    private static final String TOPIC = "actualizar";
 
     @Autowired
     Feign feignservice;
 
     @PostMapping("/reserva")
     public ResponseEntity<ReservaOutputDTO> addReserva(@RequestBody ReservaInputDTO reservaInputDTO){
-                  reservaKafkaTemplate.send(TOPIC,reservaInputDTO);
+
         return new ResponseEntity<>(reservaService.addReserva(reservaInputDTO),HttpStatus.OK);
     }
 

@@ -23,4 +23,10 @@ public class CustomExceptions extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Void> handleFeignException(FeignException feignException){
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(NoPlazasException.class)
+    public final ResponseEntity<CustomError> handleNoPlazasException(NoPlazasException noPlazasException){
+        CustomError customError= new CustomError(HttpStatus.INTERNAL_SERVER_ERROR.value(), noPlazasException.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.toString(), new Date());
+        return new ResponseEntity<CustomError>(customError,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
