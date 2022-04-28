@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -24,11 +25,14 @@ public class ReservaController {
     @Autowired
     ReservaService reservaService;
 
+
+
     @Autowired
     Feign feignservice;
 
     @PostMapping("/reserva")
     public ResponseEntity<ReservaOutputDTO> addReserva(@RequestBody ReservaInputDTO reservaInputDTO){
+
         return new ResponseEntity<>(reservaService.addReserva(reservaInputDTO),HttpStatus.OK);
     }
 

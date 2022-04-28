@@ -1,5 +1,7 @@
 package com.example.Ejercicio.BackWeb.Reserva.application;
 
+import com.example.Ejercicio.BackWeb.Exceptions.UnprocesableException;
+import com.example.Ejercicio.BackWeb.Kafka.MessageProducer;
 import com.example.Ejercicio.BackWeb.Reserva.domain.Reserva;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaInputDTO;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaOutputDTO;
@@ -7,8 +9,12 @@ import com.example.Ejercicio.BackWeb.Reserva.infrastructure.repository.ReservaRe
 import com.example.Ejercicio.BackWeb.ReservaDisponible.application.ReservaDisponibleService;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,14 +28,28 @@ public class ReservaServiceImpl implements ReservaService {
     @Autowired
     ReservaDisponibleService reservaDisponibleService;
 
+    @Autowired
+    MessageProducer messageProducer;
+
+
 
 
 
     @Override
     public ReservaOutputDTO addReserva(ReservaInputDTO reservaInputDTO) {
+        this.checkDestinos(reservaInputDTO.getCiudad());
+        this.checkHorarios(reservaInputDTO.getHora());
+        if (reservaRepo.findByCiudadAndFechaAndHoraAndEmailAndNombre(reservaInputDTO.getCiudad(),reservaInputDTO.getFecha(), reservaInputDTO.getHora(), reservaInputDTO.getEmail(),reservaInputDTO.getNombre())!=null){
+            throw new UnprocesableException("Ya existe una reserva con estos datos");
+        }
+        Date fecha=reservaInputDTO.getFecha();
+        if (fecha.before(new Date(System.currentTimeMillis()))){
+            throw new UnprocesableException("La fecha no puede ser anterior a la actual");
+        };
         Reserva reserva= convertToEntity(reservaInputDTO);
         ReservaDisponible rd= reservaDisponibleService.createReservaDisp(reservaInputDTO);
         reserva.setAutobus(rd.getAutobus());
+        messageProducer.sendMessage(reservaInputDTO);
         reservaRepo.save(reserva);
         return convertToDTO(reserva);
     }
@@ -43,27 +63,56 @@ public class ReservaServiceImpl implements ReservaService {
         return  reservaOutputDTOS;
     }
 
+    @Override
+    public void listenReserva(ReservaInputDTO reservaInputDTO) {
+        if (reservaRepo.findByCiudadAndFechaAndHoraAndEmailAndNombre(reservaInputDTO.getCiudad(),reservaInputDTO.getFecha(), reservaInputDTO.getHora(), reservaInputDTO.getEmail(),reservaInputDTO.getNombre())!=null){
+            return;
+        }
+
+        Reserva reserva= convertToEntity(reservaInputDTO);
+        ReservaDisponible rd= reservaDisponibleService.createReservaDisp(reservaInputDTO);
+        reserva.setAutobus(rd.getAutobus());
+        reservaRepo.save(reserva);
+
+    }
+
     private Reserva convertToEntity(ReservaInputDTO reservaInputDTO){
         Reserva reserva= new Reserva();
-        reserva.setCiudad_destino(reservaInputDTO.getCiudadDestino());
+        reserva.setCiudad(reservaInputDTO.getCiudad());
         reserva.setNombre(reservaInputDTO.getNombre());
         reserva.setApellidos(reservaInputDTO.getApellidos());
         reserva.setEmail(reservaInputDTO.getEmail());
         reserva.setTelefono(reservaInputDTO.getTelefono());
-        reserva.setFechaReserva(reservaInputDTO.getFechaReserva());
-        reserva.setHoraReserva(reservaInputDTO.getHoraReserva());
+        reserva.setFecha(reservaInputDTO.getFecha());
+        reserva.setHora(reservaInputDTO.getHora());
         return reserva;
     }
 
     private ReservaOutputDTO convertToDTO(Reserva reserva){
         ReservaOutputDTO reservaOutputDTO= new ReservaOutputDTO();
-        reservaOutputDTO.setCiudadDestino(reserva.getCiudad_destino());
+        reservaOutputDTO.setCiudadDestino(reserva.getCiudad());
         reservaOutputDTO.setNombre(reserva.getNombre());
         reservaOutputDTO.setApellidos(reserva.getApellidos());
         reservaOutputDTO.setTelefono(reserva.getTelefono());
         reservaOutputDTO.setEmail(reserva.getEmail());
-        reservaOutputDTO.setFechaReserva(reserva.getFechaReserva());
-        reservaOutputDTO.setHoraReserva(reserva.getHoraReserva());
+        reservaOutputDTO.setFechaReserva(reserva.getFecha());
+        reservaOutputDTO.setHoraReserva(reserva.getHora());
         return reservaOutputDTO;
     }
+
+    private void checkDestinos(String destino){
+         String[] destinosDisponibles= {"Valencia","Madrid","Barcelona","Bilbao"};
+        if (!Arrays.asList(destinosDisponibles).contains(destino)){
+            throw new UnprocesableException("Los destinos disponibles son Valencia, Madrid,Bilbao o Barcelona");
+        }
+    }
+
+    private void checkHorarios(Float hora){
+
+        if (hora.compareTo(8f)!=0 && hora.compareTo(12f)!=0  && hora.compareTo(16f)!=0  && hora.compareTo(20f)!=0 ){
+            throw new UnprocesableException("Las horas disponibles son las 8h, 12h , 16h y 20h");
+        }
+    }
+
+
 }

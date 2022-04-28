@@ -29,19 +29,19 @@ public class ReservaRepositoryImpl {
             switch (field)
             {
                 case "fechainferior":
-                    predicates.add(cb.greaterThanOrEqualTo(root.get("fechaReserva"),(Date)value));
+                    predicates.add(cb.greaterThanOrEqualTo(root.get("fecha"),(Date)value));
                     break;
                 case "fechasuperior":
-                    predicates.add(cb.lessThanOrEqualTo(root.get("fechaReserva"),(Date)value));
+                    predicates.add(cb.lessThanOrEqualTo(root.get("fecha"),(Date)value));
                     break;
                 case "ciudad":
-                    predicates.add(cb.equal(root.get("ciudad_destino"),(String)value));
+                    predicates.add(cb.equal(root.get("ciudad"),(String)value));
                     break;
                 case "horainferior":
-                    predicates.add(cb.greaterThanOrEqualTo(root.get("horaReserva"),(Float)value));
+                    predicates.add(cb.greaterThanOrEqualTo(root.get("hora"),(Float)value));
                     break;
                 case "horasuperior":
-                    predicates.add(cb.lessThanOrEqualTo(root.get("horaReserva"),(Float)value));
+                    predicates.add(cb.lessThanOrEqualTo(root.get("hora"),(Float)value));
                     break;
             }
         });

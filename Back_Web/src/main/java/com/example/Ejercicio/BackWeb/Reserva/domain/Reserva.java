@@ -18,7 +18,7 @@ public class Reserva {
     @Column(nullable = false)
     private String id_reserva;
     @Column(nullable = false)
-    private String ciudad_destino;
+    private String ciudad;
     @Column(nullable = false)
     private String nombre;
     @Column(nullable = false)
@@ -28,9 +28,9 @@ public class Reserva {
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
-    private Date fechaReserva;
+    private Date fecha;
     @Column(nullable = false)
-    private Float horaReserva;
+    private Float hora;
     @ManyToOne(fetch = FetchType.LAZY)
     private Autobus autobus;
 

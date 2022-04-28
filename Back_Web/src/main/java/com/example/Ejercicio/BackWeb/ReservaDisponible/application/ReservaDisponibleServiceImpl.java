@@ -1,6 +1,7 @@
 package com.example.Ejercicio.BackWeb.ReservaDisponible.application;
 
 import com.example.Ejercicio.BackWeb.Autobus.domain.Autobus;
+import com.example.Ejercicio.BackWeb.Exceptions.NoPlazasException;
 import com.example.Ejercicio.BackWeb.Exceptions.UnprocesableException;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaInputDTO;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
@@ -25,10 +26,7 @@ public class ReservaDisponibleServiceImpl implements ReservaDisponibleService {
     public ReservaDisponible createReservaDisp(ReservaInputDTO reservaInputDTO) {
 
         ReservaDisponible rd = convertToReservaDisp(reservaInputDTO);
-        Date fecha=rd.getId().getFecha();
-        if (fecha.before(new Date(System.currentTimeMillis()))){
-            throw new UnprocesableException("La fecha es anterior a la actual");
-        };
+
         checkReservasDisponibles(rd);
         return rd;
     }
@@ -44,7 +42,7 @@ public class ReservaDisponibleServiceImpl implements ReservaDisponibleService {
 
     private ReservaDisponible convertToReservaDisp(ReservaInputDTO reservaInputDTO) {
         ReservaDisponible rd = new ReservaDisponible();
-        rd.setId(new ReservaDisponibleID(reservaInputDTO.getCiudadDestino(), reservaInputDTO.getFechaReserva(), reservaInputDTO.getHoraReserva()));
+        rd.setId(new ReservaDisponibleID(reservaInputDTO.getCiudad(), reservaInputDTO.getFecha(), reservaInputDTO.getHora()));
         rd.setPlazasdisponibles(40);
         return rd;
 
@@ -64,21 +62,23 @@ public class ReservaDisponibleServiceImpl implements ReservaDisponibleService {
         String ciudad = rs.getId().getCiudad();
         Date fecha = rs.getId().getFecha();
         float hora = rs.getId().getHora();
+        int maximaCapacidad=40;
         Optional<ReservaDisponible> rd = reservaDisponibleRepo.findById(new ReservaDisponibleID(ciudad, fecha, hora));
        if (!rd.isPresent()){
-           Autobus autobus = new Autobus(rs.getId(), 40, rs, new ArrayList<>());
+           Autobus autobus = new Autobus(rs.getId(), maximaCapacidad, rs, new ArrayList<>());
            rs.setAutobus(autobus);
-           rs.setPlazasdisponibles(40-1);
+           rs.setPlazasdisponibles(maximaCapacidad -1);
            reservaDisponibleRepo.save(rs);
        } else {
 
            int plazas= rd.get().getPlazasdisponibles();
            if (plazas==0){
-               throw new UnprocesableException("No quedan plazas en el autobus");
+               throw new NoPlazasException("No quedan plazas en el autobus");
            }
            Autobus autobus = rd.get().getAutobus();
            rs.setAutobus(autobus);
            rd.get().setPlazasdisponibles(plazas-1);
+           reservaDisponibleRepo.save(rd.get());
        }
 
     }
