@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Back_Empresa/Back_Empresa.iml" filepath="$PROJECT_DIR$/Back_Empresa/Back_Empresa.iml" />
       <module fileurl="file://$PROJECT_DIR$/Back_Web/Back_Web.iml" filepath="$PROJECT_DIR$/Back_Web/Back_Web.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Ejercicio Final.iml" filepath="$PROJECT_DIR$/.idea/Ejercicio Final.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EurekaServer/EurekaServer.iml" filepath="$PROJECT_DIR$/EurekaServer/EurekaServer.iml" />
     </modules>
   </component>
 </project>

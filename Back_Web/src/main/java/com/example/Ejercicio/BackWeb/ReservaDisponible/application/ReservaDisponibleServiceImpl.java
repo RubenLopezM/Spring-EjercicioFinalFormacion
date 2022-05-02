@@ -2,7 +2,6 @@ package com.example.Ejercicio.BackWeb.ReservaDisponible.application;
 
 import com.example.Ejercicio.BackWeb.Autobus.domain.Autobus;
 import com.example.Ejercicio.BackWeb.Exceptions.NoPlazasException;
-import com.example.Ejercicio.BackWeb.Exceptions.UnprocesableException;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaInputDTO;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponibleID;

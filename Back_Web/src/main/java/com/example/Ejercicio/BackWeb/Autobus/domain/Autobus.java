@@ -28,7 +28,7 @@ public class Autobus {
     @MapsId
     private ReservaDisponible reservasdisponibles;
     @OneToMany(mappedBy = "autobus")
-    private List<Reserva> reservas;
+    private List<Reserva> reservas=new ArrayList<Reserva>();
 
 
 }

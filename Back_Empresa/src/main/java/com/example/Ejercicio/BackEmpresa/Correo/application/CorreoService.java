@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CorreoService {
 
-    void sendEmail(String to, String subject, String text, ReservaInputDTO reservaInputDTO);
+    void sendEmail( String subject, String text, ReservaInputDTO reservaInputDTO);
     public List<CorreoOutputDTO> searchMails(HashMap<String,Object> conditions);
 
 }

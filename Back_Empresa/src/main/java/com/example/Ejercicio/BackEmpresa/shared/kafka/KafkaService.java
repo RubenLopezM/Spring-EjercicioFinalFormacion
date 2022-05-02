@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 
 @Service
 public class KafkaService {
@@ -24,8 +25,7 @@ public class KafkaService {
     @KafkaListener(topics = "actualizar",
             groupId = "group2", containerFactory
             = "reservaKafkaListenerContainerFactory")
-    public void listen(ConsumerRecord<String,ReservaInputDTO> record)
-    {
+    public void listen(ConsumerRecord<String,ReservaInputDTO> record)  {
         System.out.println("Nueva entrada"+ record.value());
         reservaService.escucharReserva(record.value());
     }

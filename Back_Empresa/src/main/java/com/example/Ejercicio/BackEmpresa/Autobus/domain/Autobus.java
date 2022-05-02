@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,5 +19,5 @@ public class Autobus {
     private int totalPlazas;
     private int plazasdisponibles;
     @OneToMany(mappedBy = "autobus",cascade = CascadeType.ALL)
-    private List<Reserva> reservas;
+    private List<Reserva> reservas= new ArrayList<Reserva>();
 }

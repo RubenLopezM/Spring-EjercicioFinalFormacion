@@ -20,7 +20,7 @@ public class CustomExceptions extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public final ResponseEntity<CustomError> handleNotFoundException(NotFoundException notFoundException){
         CustomError customError=new CustomError(HttpStatus.NOT_FOUND.value(), notFoundException.getMessage(),HttpStatus.NOT_FOUND.toString(), new Date() );
-        return new ResponseEntity<CustomError>(customError,HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<CustomError>(customError,HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoPlazasException.class)

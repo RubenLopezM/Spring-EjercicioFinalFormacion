@@ -31,19 +31,19 @@ public class ReservaDisponibleRepositoryImpl {
             switch (field)
             {
                 case "fechainferior":
-                   predicates.add(cb.greaterThan(root.get("id").get("fecha"),(Date)value));
+                   predicates.add(cb.greaterThanOrEqualTo(root.get("id").get("fecha"),(Date)value));
                    break;
                 case "fechasuperior":
-                    predicates.add(cb.lessThan(root.get("id").get("fecha"),(Date)value));
+                    predicates.add(cb.lessThanOrEqualTo(root.get("id").get("fecha"),(Date)value));
                     break;
                 case "ciudad":
                     predicates.add(cb.equal(root.get("id").get(field),(String)value));
                     break;
                 case "horainferior":
-                    predicates.add(cb.greaterThan(root.get("id").get("hora"),(Float)value));
+                    predicates.add(cb.greaterThanOrEqualTo(root.get("id").get("hora"),(Float)value));
                     break;
                 case "horasuperior":
-                    predicates.add(cb.lessThan(root.get("id").get("hora"),(Float)value));
+                    predicates.add(cb.lessThanOrEqualTo(root.get("id").get("hora"),(Float)value));
                     break;
             }
         });

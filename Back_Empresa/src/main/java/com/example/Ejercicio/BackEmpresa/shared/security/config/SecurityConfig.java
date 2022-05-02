@@ -4,6 +4,7 @@ import com.example.Ejercicio.BackEmpresa.shared.security.filter.CustomAuthorizat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/api/v0/token/**").permitAll()
                 .antMatchers("/api/v0/reserva/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v0/reservasautobus").hasAnyRole("USER","ADMIN")
                 .anyRequest().authenticated();
     }
 

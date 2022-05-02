@@ -2,7 +2,7 @@ package com.example.Ejercicio.BackWeb.Reserva.domain;
 
 import com.example.Ejercicio.BackWeb.Autobus.domain.Autobus;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,10 +28,14 @@ public class Reserva {
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date fecha;
     @Column(nullable = false)
     private Float hora;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ciudad",referencedColumnName = "ciudad",insertable = false,updatable = false)
+    @JoinColumn(name = "fecha",referencedColumnName = "fecha",insertable = false,updatable = false)
+    @JoinColumn(name = "hora",referencedColumnName = "hora",insertable = false,updatable = false)
     private Autobus autobus;
 
 }

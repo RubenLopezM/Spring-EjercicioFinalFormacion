@@ -11,6 +11,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,15 +25,17 @@ public class CorreoServiceImpl implements CorreoService{
     @Autowired
     CorreoRepository correoRepo;
 
+
+
     @Override
-    public void sendEmail(String to, String subject, String text, ReservaInputDTO reservaInputDTO) {
+    public void sendEmail( String subject, String text, ReservaInputDTO reservaInputDTO) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("${spring.mail.username}");
-        message.setTo(to);
+        message.setTo(reservaInputDTO.getEmail());
         message.setSubject(subject);
         message.setText(text);
         emailSender.send(message);
-        CorreoInputDTO correoInputDTO= new CorreoInputDTO(reservaInputDTO.getCiudad(),reservaInputDTO.getEmail(),reservaInputDTO.getFecha(), reservaInputDTO.getHora());
+        CorreoInputDTO correoInputDTO= new CorreoInputDTO(reservaInputDTO.getCiudad(),reservaInputDTO.getEmail(), reservaInputDTO.getFecha(), reservaInputDTO.getHora());
         this.saveMail(correoInputDTO);
 
     }

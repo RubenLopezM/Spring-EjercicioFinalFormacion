@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="EurekaServer" />
         <module name="Back_Web" />
         <module name="Back_Empresa" />
       </profile>
@@ -14,6 +15,7 @@
       <module name="Back_Empresa" target="17" />
       <module name="Back_Web" target="17" />
       <module name="Back_Web (1)" target="17" />
+      <module name="EurekaServer" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

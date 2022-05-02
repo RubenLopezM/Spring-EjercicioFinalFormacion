@@ -17,9 +17,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @EnableScheduling
@@ -37,16 +42,17 @@ public class ReservaServiceImpl implements ReservaService{
     @Autowired
     MessageProducer messageProducer;
 
+
     @Override
-    public void escucharReserva(ReservaInputDTO reservaInputDTO) {
+    public void escucharReserva(ReservaInputDTO reservaInputDTO)  {
         Reserva reserva= this.convertToReserva(reservaInputDTO);
         reservaRepo.save(reserva);
-        correoService.sendEmail(reservaInputDTO.getEmail(),"Reserva Confirmada","El identificador de su reserva es "+ reserva.getIdentificador(),reservaInputDTO);
+        correoService.sendEmail("Reserva Confirmada","El identificador de su reserva es "+ reserva.getIdentificador()+ "\nDestino:"+ reservaInputDTO.getCiudad()+"\nFecha Reserva:"+ reservaInputDTO.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()+"\nHora Reserva:"+reservaInputDTO.getHora(),reservaInputDTO);
 
     }
 
     @Override
-    public ReservaOutputDTO hacerReserva(ReservaInputDTO reservaInputDTO) {
+    public ReservaOutputDTO hacerReserva(ReservaInputDTO reservaInputDTO)  {
        if (reservaRepo.findByCiudadAndFechaAndHoraAndEmailAndNombre(reservaInputDTO.getCiudad(),reservaInputDTO.getFecha(), reservaInputDTO.getHora(),reservaInputDTO.getEmail() ,reservaInputDTO.getNombre())!=null){
            throw new UnprocesableException("Ya hay una reserva con estos datos");
        }
@@ -58,7 +64,9 @@ public class ReservaServiceImpl implements ReservaService{
         };
         Reserva reserva= this.convertToReserva(reservaInputDTO);
         reservaRepo.save(reserva);
-        correoService.sendEmail(reservaInputDTO.getEmail(),"Reserva Confirmada","El identificador de su reserva es "+ reserva.getIdentificador(),reservaInputDTO);
+        correoService.sendEmail(
+                "Reserva Confirmada",
+                "El identificador de su reserva es "+ reserva.getIdentificador()+ "\nDestino:"+ reservaInputDTO.getCiudad()+"\nFecha Reserva:"+ reservaInputDTO.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()+"\nHora Reserva:"+reservaInputDTO.getHora(),reservaInputDTO);
         return convertToReservaDTO(reserva);
 
 
@@ -76,8 +84,18 @@ public class ReservaServiceImpl implements ReservaService{
         }
     }
 
+    @Override
+    public List<ReservaOutputDTO> findReservasinAutobus(String ciudad, Date fecha, Float hora)  {
 
-    private Reserva convertToReserva(ReservaInputDTO reservaInputDTO){
+        Autobus autobus= autobusService.findAutobus(ciudad, fecha, hora);
+        List<Reserva> reservas= autobus.getReservas();
+        return reservas.stream()
+                        .map(reserva -> convertToReservaDTO(reserva))
+                        .collect(Collectors.toList());
+    }
+
+
+    private Reserva convertToReserva(ReservaInputDTO reservaInputDTO)  {
         Reserva reserva= new Reserva();
         reserva.setCiudad(reservaInputDTO.getCiudad());
         reserva.setNombre(reservaInputDTO.getNombre());
