@@ -7,8 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="EurekaServer" />
-        <module name="Back_Web" />
         <module name="Back_Empresa" />
+        <module name="Back_Web" />
+        <module name="Gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -16,6 +17,7 @@
       <module name="Back_Web" target="17" />
       <module name="Back_Web (1)" target="17" />
       <module name="EurekaServer" target="17" />
+      <module name="Gateway" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -23,6 +25,8 @@
       <module name="Back_Empresa" options="-parameters" />
       <module name="Back_Web" options="-parameters" />
       <module name="Back_Web (1)" options="-parameters" />
+      <module name="EurekaServer" options="-parameters" />
+      <module name="Gateway" options="-parameters" />
     </option>
   </component>
 </project>

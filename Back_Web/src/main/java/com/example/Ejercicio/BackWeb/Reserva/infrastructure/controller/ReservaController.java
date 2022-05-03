@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,12 @@ public class ReservaController {
 
     @Autowired
     Feign feignservice;
+
+    @GetMapping("/test")
+    public String testService(HttpServletRequest request) {
+
+        return request.getRequestURL().toString();
+    }
 
     @PostMapping("/reserva")
     public ResponseEntity<ReservaOutputDTO> addReserva(@RequestBody ReservaInputDTO reservaInputDTO){
