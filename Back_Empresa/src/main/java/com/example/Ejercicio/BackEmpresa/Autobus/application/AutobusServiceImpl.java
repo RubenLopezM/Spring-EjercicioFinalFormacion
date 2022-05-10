@@ -24,6 +24,7 @@ public class AutobusServiceImpl implements AutobusService{
     @Autowired
     AutobusRepository autobusRepo;
 
+
     @Override
     public Autobus checkAutobus(ReservaInputDTO reservaInputDTO) {
 
@@ -60,6 +61,15 @@ public class AutobusServiceImpl implements AutobusService{
     public String findPlazaslibres(String ciudad, Date fecha, Float hora) {
         Autobus autobus= this.findAutobus(ciudad,fecha,hora);
         return "Plazas libres: " + autobus.getPlazasdisponibles();
+    }
+
+    @Override
+    public void updateAutobus(Autobus autobus) {
+        int capacidad=40;
+        List<Reserva> list=autobus.getReservas();
+        int numReservas=list.size();
+        autobus.setPlazasdisponibles(capacidad-numReservas);
+        autobusRepo.save(autobus);
     }
 
 

@@ -18,6 +18,6 @@ public class Autobus {
     private AutobusID id;
     private int totalPlazas;
     private int plazasdisponibles;
-    @OneToMany(mappedBy = "autobus",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autobus",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Reserva> reservas= new ArrayList<Reserva>();
 }

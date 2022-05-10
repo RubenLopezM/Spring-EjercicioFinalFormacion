@@ -26,8 +26,11 @@ public class KafkaService {
             groupId = "group2", containerFactory
             = "reservaKafkaListenerContainerFactory")
     public void listen(ConsumerRecord<String,ReservaInputDTO> record)  {
-        System.out.println("Nueva entrada"+ record.value());
-        reservaService.escucharReserva(record.value());
+
+        if (record.key().equals("create")) reservaService.escucharReserva(record.value());
+        
+        if (record.key().equals("delete")) reservaService.borrarReserva(record.value());
+
     }
 
 

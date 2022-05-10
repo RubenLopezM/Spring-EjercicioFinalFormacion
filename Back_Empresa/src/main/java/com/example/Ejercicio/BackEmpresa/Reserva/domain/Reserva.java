@@ -23,7 +23,7 @@ public class Reserva {
     private String nombre;
     @Column(nullable = false)
     private String apellidos;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 9)
     private String telefono;
     @Column(nullable = false)
     private String email;

@@ -13,4 +13,5 @@ public interface ReservaService {
     public ReservaOutputDTO hacerReserva(ReservaInputDTO reservaInputDTO) ;
     public void actualizarReservas();
     public List<ReservaOutputDTO> findReservasinAutobus(String ciudad, Date fecha, Float hora);
+    public void borrarReserva(ReservaInputDTO reservaInputDTO);
 }

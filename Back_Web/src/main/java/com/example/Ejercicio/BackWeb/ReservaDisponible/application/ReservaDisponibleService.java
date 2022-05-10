@@ -4,10 +4,12 @@ import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.Reser
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.infrastructure.controller.DTO.ReservaDisponibleOutputDTO;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public interface ReservaDisponibleService {
     public ReservaDisponible createReservaDisp(ReservaInputDTO reservaInputDTO);
     public List<ReservaDisponibleOutputDTO> searchPlazas(HashMap<String, Object> conditions);
+    public void updateReservaDisp(String ciudad, Date fecha, Float hora);
 }

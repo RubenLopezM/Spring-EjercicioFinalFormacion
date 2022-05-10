@@ -10,4 +10,5 @@ public interface AutobusService {
     public Autobus checkAutobus(ReservaInputDTO reservaInputDTO);
     public Autobus findAutobus(String ciudad, Date fecha, Float hora);
     public String findPlazaslibres(String ciudad, Date fecha, Float hora);
+    public void updateAutobus(Autobus autobus);
 }

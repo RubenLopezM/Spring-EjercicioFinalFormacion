@@ -11,4 +11,5 @@ public interface ReservaService {
     public ReservaOutputDTO addReserva(ReservaInputDTO reservaInputDTO);
     public List<ReservaOutputDTO> searchReservas(HashMap<String, Object> conditions);
     public void listenReserva (ReservaInputDTO reservaInputDTO);
+    public void deleteReserva(String id);
 }

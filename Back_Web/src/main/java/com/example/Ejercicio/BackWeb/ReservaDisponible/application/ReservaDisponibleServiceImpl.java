@@ -2,6 +2,7 @@ package com.example.Ejercicio.BackWeb.ReservaDisponible.application;
 
 import com.example.Ejercicio.BackWeb.Autobus.domain.Autobus;
 import com.example.Ejercicio.BackWeb.Exceptions.NoPlazasException;
+import com.example.Ejercicio.BackWeb.Exceptions.NotFoundException;
 import com.example.Ejercicio.BackWeb.Reserva.infrastructure.controller.DTO.ReservaInputDTO;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponible;
 import com.example.Ejercicio.BackWeb.ReservaDisponible.domain.ReservaDisponibleID;
@@ -37,6 +38,15 @@ public class ReservaDisponibleServiceImpl implements ReservaDisponibleService {
                 .map(reservaDisponible -> convertToDTO(reservaDisponible))
                 .collect(Collectors.toList());
         return reservaDisponiblesDTO;
+    }
+
+    @Override
+    public void updateReservaDisp(String ciudad, Date fecha, Float hora) {
+        ReservaDisponibleID reservaDisponibleID= new ReservaDisponibleID(ciudad,fecha,hora);
+        ReservaDisponible reservaDisponible= reservaDisponibleRepo.findById(reservaDisponibleID).orElseThrow(()->new NotFoundException("No se ha encontrado la reserva disponible"));
+        int plazasDisp= reservaDisponible.getPlazasdisponibles();
+        reservaDisponible.setPlazasdisponibles(plazasDisp+1);
+        reservaDisponibleRepo.save(reservaDisponible);
     }
 
     private ReservaDisponible convertToReservaDisp(ReservaInputDTO reservaInputDTO) {

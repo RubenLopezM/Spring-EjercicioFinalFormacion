@@ -1,8 +1,11 @@
 package com.example.Ejercicio.BackWeb.Reserva.domain;
 
 import com.example.Ejercicio.BackWeb.Autobus.domain.Autobus;
+import com.example.Ejercicio.BackWeb.StringPrefixedSequenceIdGenerator;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,7 +17,13 @@ import java.util.Date;
 public class Reserva {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservas_seq")
+    @GenericGenerator(
+            name = "reservas_seq",
+            strategy = "com.example.Ejercicio.BackWeb.StringPrefixedSequenceIdGenerator",
+            parameters = {
+                    @Parameter(name = StringPrefixedSequenceIdGenerator.INCREMENT_PARAM, value = "1"),
+            })
     @Column(nullable = false)
     private String id_reserva;
     @Column(nullable = false)
@@ -23,7 +32,7 @@ public class Reserva {
     private String nombre;
     @Column(nullable = false)
     private String apellidos;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 9)
     private String telefono;
     @Column(nullable = false)
     private String email;

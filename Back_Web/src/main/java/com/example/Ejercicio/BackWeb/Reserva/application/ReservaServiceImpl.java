@@ -1,5 +1,6 @@
 package com.example.Ejercicio.BackWeb.Reserva.application;
 
+import com.example.Ejercicio.BackWeb.Exceptions.NotFoundException;
 import com.example.Ejercicio.BackWeb.Exceptions.UnprocesableException;
 import com.example.Ejercicio.BackWeb.Kafka.MessageProducer;
 import com.example.Ejercicio.BackWeb.Reserva.domain.Reserva;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,11 +46,11 @@ public class ReservaServiceImpl implements ReservaService {
         Date fecha=reservaInputDTO.getFecha();
         if (fecha.before(new Date(System.currentTimeMillis()))){
             throw new UnprocesableException("La fecha no puede ser anterior a la actual");
-        };
+        }
         Reserva reserva= convertToEntity(reservaInputDTO);
         ReservaDisponible rd= reservaDisponibleService.createReservaDisp(reservaInputDTO);
         reserva.setAutobus(rd.getAutobus());
-        messageProducer.sendMessage(reservaInputDTO);
+        messageProducer.sendMessage(reservaInputDTO,"create");
         reservaRepo.save(reserva);
         return convertToDTO(reserva);
     }
@@ -74,6 +75,16 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setAutobus(rd.getAutobus());
         reservaRepo.save(reserva);
 
+    }
+
+    @Override
+    public void deleteReserva(String id) {
+
+        Reserva reserva= reservaRepo.findById(id).orElseThrow(()->new NotFoundException("No se ha encontrado esta reserva"));
+        reservaRepo.delete(reserva);
+        ReservaInputDTO reservaInputDTO=new ReservaInputDTO(reserva);
+        reservaDisponibleService.updateReservaDisp(reservaInputDTO.getCiudad(),reservaInputDTO.getFecha(),reservaInputDTO.getHora());
+        messageProducer.sendMessage(reservaInputDTO,"delete");
     }
 
     private Reserva convertToEntity(ReservaInputDTO reservaInputDTO){

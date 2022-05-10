@@ -19,9 +19,9 @@ public class MessageProducer {
 
     private static final String TOPIC = "actualizar";
 
-    public void sendMessage(ReservaInputDTO reservaInputDTO) {
+    public void sendMessage(ReservaInputDTO reservaInputDTO, String key) {
 
-        ProducerRecord producerRecord= new ProducerRecord<> (TOPIC,reservaInputDTO);
+        ProducerRecord producerRecord= new ProducerRecord<> (TOPIC,key,reservaInputDTO);
         producerRecord.headers().add("application","backweb".getBytes());
 
 

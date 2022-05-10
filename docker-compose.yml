@@ -1,5 +1,95 @@
 version: '2'
 services:
+  eureka-server:
+    image: eureka
+    build:
+      context: ./EurekaServer
+      dockerfile: Dockerfile
+    restart: always
+    container_name: eureka
+    ports:
+      - 8761:8761
+  gateway-sever:
+    image: gateway
+    build:
+      context: ./Gateway
+      dockerfile: Dockerfile
+    restart: always
+    container_name: gateway
+    ports:
+      - 9000:9000
+    depends_on:
+      - eureka-server
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+  back-empresa:
+    image: backempresa
+    build:
+      context: ./Back_Empresa
+      dockerfile: Dockerfile
+    container_name: backempresa
+    ports:
+      - 8090:8090
+    depends_on:
+      - eureka-server
+      - postgresqldb
+      - kafka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+
+  postgresqldb:
+    image: postgres:alpine
+    container_name: postgresqldb
+    ports:
+      - 5440:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+
+  back-web:
+    image: backweb
+    build:
+      context: ./Back_Web
+      dockerfile: Dockerfile
+    container_name: backweb
+    ports:
+      - 8080:8080
+    depends_on:
+      - eureka-server
+      - postgresqldbweb
+      - kafka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+
+  back-web2:
+    image: backweb2
+    build:
+      context: ./Back_Web
+      dockerfile: Dockerfile
+    container_name: backweb2
+    ports:
+      - 8081:8081
+    depends_on:
+      - eureka-server
+      - postgresqldbweb
+      - kafka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
+
+  postgresqldbweb:
+    image: postgres:alpine
+    container_name: postgresqldbweb
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper

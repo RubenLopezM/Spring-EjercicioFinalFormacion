@@ -43,6 +43,19 @@ public class ReservaController {
         return new ResponseEntity<>(reservaService.addReserva(reservaInputDTO),HttpStatus.OK);
     }
 
+    @DeleteMapping("reserva/{id}")
+    public ResponseEntity<String> cancelarReserva(@RequestHeader("token") String token,
+                                                  @PathVariable String id){
+        ResponseEntity responseEntity= new ResponseEntity<>(feignservice.checkToken(token),HttpStatus.OK);
+        if(responseEntity.getStatusCode().equals(HttpStatus.OK)){
+            reservaService.deleteReserva(id);
+            return new ResponseEntity<>("Registro borrado correctamente",HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+    }
+
     @PostMapping("/token")
     String login(@RequestHeader("username") String username,@RequestHeader("password") String password){
 
