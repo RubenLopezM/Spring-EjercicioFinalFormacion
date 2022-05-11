@@ -65,7 +65,7 @@ services:
       SPRING_KAFKA_BOOTSTRAPSERVERS: kafka:9092
 
   back-web2:
-    image: backweb2
+    image: backweb
     build:
       context: ./Back_Web
       dockerfile: Dockerfile

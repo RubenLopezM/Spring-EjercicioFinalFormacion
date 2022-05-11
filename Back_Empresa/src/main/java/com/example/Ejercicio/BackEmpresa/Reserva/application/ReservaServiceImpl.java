@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,12 @@ public class ReservaServiceImpl implements ReservaService{
 
     @Autowired
     MessageProducer messageProducer;
+
+    private List<ReservaInputDTO> reservasBackEmpresa;
+
+    public ReservaServiceImpl(){
+        this.reservasBackEmpresa= new ArrayList<>();
+    }
 
 
     @Override
@@ -69,6 +76,7 @@ public class ReservaServiceImpl implements ReservaService{
         correoService.sendEmail(
                 "Reserva Confirmada",
                 "El identificador de su reserva es "+ reserva.getIdentificador()+ "\nDestino:"+ reservaInputDTO.getCiudad()+"\nFecha Reserva:"+ reservaInputDTO.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()+"\nHora Reserva:"+reservaInputDTO.getHora(),reservaInputDTO);
+        this.reservasBackEmpresa.add(reservaInputDTO);
         return convertToReservaDTO(reserva);
 
     }
@@ -76,13 +84,13 @@ public class ReservaServiceImpl implements ReservaService{
     @Scheduled(fixedRate = 60000)
     @Override
     public void actualizarReservas() {
-        List<Reserva> reservas= reservaRepo.findAll();
-        if (reservas.size()>0){
-            for (Reserva reserva: reservas){
-                ReservaInputDTO reservaInputDTO= new ReservaInputDTO(reserva);
-                messageProducer.sendMessage(reservaInputDTO);
+
+        if (reservasBackEmpresa.size()>0){
+            for (ReservaInputDTO reserva: reservasBackEmpresa){
+                messageProducer.sendMessage(reserva);
             }
         }
+        reservasBackEmpresa.clear();
     }
 
     @Override
